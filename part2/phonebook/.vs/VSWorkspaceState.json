@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src"
+    "\\src",
+    "\\src\\services"
   ],
   "SelectedNode": "\\db.json",
   "PreviewInSolutionExplorer": false
