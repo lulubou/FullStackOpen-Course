@@ -73,7 +73,7 @@ const App = () => {
                     })
                     .catch(error => {
                         setMessageType('error')
-                        setMessage(`Error modifying ${newName}'s phone number : ${error}.`)
+                        setMessage(`Error modifying ${newName}'s phone number : ${error.response.data.error}`)
                         setTimeout(() => { setMessage(null) }, 5000)
                     })
             }
@@ -96,7 +96,7 @@ const App = () => {
                 })
                 .catch(error => {
                     setMessageType('error')
-                    setMessage(`Error adding '${newName}' : ${error}.`)
+                    setMessage(`Error adding '${newName}' : ${error.response.data.error}`)
                     setTimeout(() => { setMessage(null) }, 5000)
                 })
         }
