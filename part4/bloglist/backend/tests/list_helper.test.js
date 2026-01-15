@@ -67,8 +67,6 @@ const blogs = [
 
 // Dummy
 test('Dummy returns 1', () => {
-    const blogs = []
-
     const result = listHelper.dummy(blogs)
     assert.strictEqual(result, 1)
 })

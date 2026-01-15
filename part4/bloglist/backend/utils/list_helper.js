@@ -35,8 +35,6 @@ const mostLikes = (blogs) => {
         - totalLikes(blogs.filter(el => el.author === b.author))
     )
 
-    console.log(sortedLikesAuthors)
-
     const authorMostLikes = sortedLikesAuthors.length > 0 ? {
         author: sortedLikesAuthors.at(-1).author,
         likes: totalLikes(sortedLikesAuthors.filter(el => el.author === sortedLikesAuthors.at(-1).author))
