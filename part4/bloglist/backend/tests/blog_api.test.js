@@ -12,9 +12,32 @@ const api = supertest(app)
 
 // Blogs
 describe('When there are initially some blogs saved', () => {
+    // Initialize login variable
+    let login;
+
     beforeEach(async () => {
+        // Create user
+        await User.deleteMany({})
+        const passwordHash = await bcrypt.hash('secret', 10)
+        const user = new User({ username: 'root', name: 'rootroot', passwordHash: passwordHash })
+        const savedUser = await user.save()
+
+        // Keep ID
+        const userId = savedUser._id
+
+        // Add user ID to blogs when creating them
         await Blog.deleteMany({})
-        await Blog.insertMany(helper.initialBlogs)
+        await Blog.insertMany(helper.initialBlogs.map(blog => ({ ...blog, user: userId })))
+
+        // Login as root user
+        const userInfo = {
+            username: 'root',
+            password: 'secret'
+        }
+
+        login = await api
+            .post('/api/login')
+            .send(userInfo)
     })
 
     test('Blogs are returned as json', async () => {
@@ -46,6 +69,7 @@ describe('When there are initially some blogs saved', () => {
 
         await api
             .post('/api/blogs')
+            .set('authorization', `Bearer ${login.body.token}`)
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -65,6 +89,7 @@ describe('When there are initially some blogs saved', () => {
 
         const savedBlog = await api
             .post('/api/blogs')
+            .set('authorization', `Bearer ${login.body.token}`)
             .send(newBlog)
 
         assert.strictEqual(savedBlog.body.likes, 0)
