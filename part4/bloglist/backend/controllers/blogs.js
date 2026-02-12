@@ -11,7 +11,7 @@ blogsRouter.post('/', async (request, response) => {
     const user = request.user
 
     if (!user) {
-        return response.status(400).json({ error: 'User not found' })
+        return response.status(401).json({ error: 'Permission is denied' })
     }
 
     const blog = new Blog({
@@ -33,7 +33,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     const user = request.user
 
     if (!user) {
-        return response.status(400).json({ error: 'User not found' })
+        return response.status(401).json({ error: 'Permission is denied' })
     }
     
     const blog = await Blog.findById(request.params.id)

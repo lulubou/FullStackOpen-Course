@@ -108,11 +108,13 @@ describe('When there are initially some blogs saved', () => {
 
         await api
             .post('/api/blogs')
+            .set('authorization', `Bearer ${login.body.token}`)
             .send(newBlogNoTitle)
             .expect(400)
 
         await api
             .post('/api/blogs')
+            .set('authorization', `Bearer ${login.body.token}`)
             .send(newBlogNoUrl)
             .expect(400)
     })
@@ -123,6 +125,7 @@ describe('When there are initially some blogs saved', () => {
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('authorization', `Bearer ${login.body.token}`)
             .expect(204)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -148,6 +151,27 @@ describe('When there are initially some blogs saved', () => {
         const updatedBlog = blogsAtEnd.find(el => el.id === blogToUpdate.id)
         
         assert.strictEqual(updatedBlog.likes, likes)
+    })
+
+    test('creation fails with proper statuscode and message if token is not provided', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+
+        const newBlog = {
+            title: "New blog test no token",
+            author: "Lucas Bouchard",
+            url: "https://urlbidon_notoken.com/",
+            likes: 5
+        }
+
+        const result = await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        assert(result.body.error.includes('Permission is denied'))
+
+        assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
     })
 })
 
